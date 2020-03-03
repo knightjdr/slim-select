@@ -112,7 +112,9 @@ export class Select {
   // Create select element and optgroup/options
   public create(data: dataArray): void {
     // Clear out select
-    this.element.innerHTML = ''
+    while(this.element.firstChild){
+      this.element.removeChild(this.element.firstChild);
+    }
 
     for (const d of data) {
       if (d.hasOwnProperty('options')) {
@@ -134,7 +136,7 @@ export class Select {
   public createOption(info: any): HTMLOptionElement {
     const optionEl = document.createElement('option')
     optionEl.value = info.value || info.text
-    optionEl.innerHTML = info.innerHTML || info.text
+    optionEl.textContent = info.text
     if (info.selected) { optionEl.selected = info.selected }
     if (info.disabled) { optionEl.disabled = true }
     if (info.placeholder) { optionEl.setAttribute('data-placeholder', 'true') }

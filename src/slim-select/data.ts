@@ -13,7 +13,6 @@ export interface Option {
   id?: string
   value?: string
   text: string
-  innerHTML?: string
   selected?: boolean
   display?: boolean
   disabled?: boolean
@@ -47,7 +46,6 @@ export class Data {
       id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
       value: (info.value ? info.value : ''),
       text: (info.text ? info.text : ''),
-      innerHTML: (info.innerHTML ? info.innerHTML : ''),
       selected: (info.selected ? info.selected : false),
       display: (info.display !== undefined ? info.display : true),
       disabled: (info.disabled ? info.disabled : false),
@@ -63,7 +61,6 @@ export class Data {
       id: String(Math.floor(Math.random() * 100000000)),
       value: data.value,
       text: data.text,
-      innerHTML: '',
       selected: false,
       display: true,
       disabled: false,
@@ -116,7 +113,6 @@ export class Data {
       id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
       value: option.value,
       text: option.text,
-      innerHTML: option.innerHTML,
       selected: option.selected,
       disabled: option.disabled,
       placeholder: option.dataset.placeholder === 'true',

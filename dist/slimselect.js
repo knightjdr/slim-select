@@ -240,7 +240,6 @@ var Data = (function () {
             id: (info.id ? info.id : String(Math.floor(Math.random() * 100000000))),
             value: (info.value ? info.value : ''),
             text: (info.text ? info.text : ''),
-            innerHTML: (info.innerHTML ? info.innerHTML : ''),
             selected: (info.selected ? info.selected : false),
             display: (info.display !== undefined ? info.display : true),
             disabled: (info.disabled ? info.disabled : false),
@@ -254,7 +253,6 @@ var Data = (function () {
             id: String(Math.floor(Math.random() * 100000000)),
             value: data.value,
             text: data.text,
-            innerHTML: '',
             selected: false,
             display: true,
             disabled: false,
@@ -301,7 +299,6 @@ var Data = (function () {
             id: (option.dataset ? option.dataset.id : false) || String(Math.floor(Math.random() * 100000000)),
             value: option.value,
             text: option.text,
-            innerHTML: option.innerHTML,
             selected: option.selected,
             disabled: option.disabled,
             placeholder: option.dataset.placeholder === 'true',
@@ -1191,7 +1188,9 @@ var Select = (function () {
         }
     };
     Select.prototype.create = function (data) {
-        this.element.innerHTML = '';
+        while (this.element.firstChild) {
+            this.element.removeChild(this.element.firstChild);
+        }
         for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
             var d = data_1[_i];
             if (d.hasOwnProperty('options')) {
@@ -1214,7 +1213,7 @@ var Select = (function () {
     Select.prototype.createOption = function (info) {
         var optionEl = document.createElement('option');
         optionEl.value = info.value || info.text;
-        optionEl.innerHTML = info.innerHTML || info.text;
+        optionEl.textContent = info.text;
         if (info.selected) {
             optionEl.selected = info.selected;
         }
@@ -1306,7 +1305,7 @@ var Slim = (function () {
         placeholder.classList.add('placeholder');
         container.appendChild(placeholder);
         var deselect = document.createElement('span');
-        deselect.innerHTML = this.main.config.deselectLabel;
+        deselect.textContent = this.main.config.deselectLabel;
         deselect.classList.add('ss-deselect');
         deselect.onclick = function (e) {
             e.stopPropagation();
@@ -1343,18 +1342,18 @@ var Slim = (function () {
         if (selected === null || (selected && selected.placeholder)) {
             var placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
-            placeholder.innerHTML = this.main.config.placeholderText;
+            placeholder.textContent = this.main.config.placeholderText;
             if (this.singleSelected) {
-                this.singleSelected.placeholder.innerHTML = placeholder.outerHTML;
+                this.singleSelected.placeholder.appendChild(placeholder);
             }
         }
         else {
             var selectedValue = '';
             if (selected) {
-                selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text;
+                selectedValue = selected.text;
             }
             if (this.singleSelected) {
-                this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '');
+                this.singleSelected.placeholder.textContent = (selected ? selectedValue : '');
             }
         }
     };
@@ -1457,8 +1456,8 @@ var Slim = (function () {
         if (selected.length === 0) {
             var placeholder = document.createElement('span');
             placeholder.classList.add(this.main.config.disabled);
-            placeholder.innerHTML = this.main.config.placeholderText;
-            this.multiSelected.values.innerHTML = placeholder.outerHTML;
+            placeholder.textContent = this.main.config.placeholderText;
+            this.multiSelected.values.appendChild(placeholder);
         }
     };
     Slim.prototype.valueDiv = function (optionObj) {
@@ -1468,11 +1467,11 @@ var Slim = (function () {
         value.dataset.id = optionObj.id;
         var text = document.createElement('span');
         text.classList.add(this.main.config.valueText);
-        text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text);
+        text.textContent = optionObj.text;
         value.appendChild(text);
         var deleteSpan = document.createElement('span');
         deleteSpan.classList.add(this.main.config.valueDelete);
-        deleteSpan.innerHTML = this.main.config.deselectLabel;
+        deleteSpan.textContent = this.main.config.deselectLabel;
         deleteSpan.onclick = function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1597,7 +1596,7 @@ var Slim = (function () {
         container.appendChild(input);
         if (this.main.addable) {
             addable.classList.add(this.main.config.addable);
-            addable.innerHTML = '+';
+            addable.textContent = '+';
             addable.onclick = function (e) {
                 if (_this.main.addable) {
                     e.preventDefault();
@@ -1726,12 +1725,14 @@ var Slim = (function () {
     Slim.prototype.options = function (content) {
         if (content === void 0) { content = ''; }
         var data = this.main.data.filtered || this.main.data.data;
-        this.list.innerHTML = '';
+        while (this.list.firstChild) {
+            this.list.removeChild(this.list.firstChild);
+        }
         if (content !== '') {
             var searching = document.createElement('div');
             searching.classList.add(this.main.config.option);
             searching.classList.add(this.main.config.disabled);
-            searching.innerHTML = content;
+            searching.textContent = content;
             this.list.appendChild(searching);
             return;
         }
@@ -1739,7 +1740,7 @@ var Slim = (function () {
             var searching = document.createElement('div');
             searching.classList.add(this.main.config.option);
             searching.classList.add(this.main.config.disabled);
-            searching.innerHTML = this.main.config.searchingText;
+            searching.textContent = this.main.config.searchingText;
             this.list.appendChild(searching);
             return;
         }
@@ -1747,7 +1748,7 @@ var Slim = (function () {
             var noResults = document.createElement('div');
             noResults.classList.add(this.main.config.option);
             noResults.classList.add(this.main.config.disabled);
-            noResults.innerHTML = this.main.config.searchText;
+            noResults.textContent = this.main.config.searchText;
             this.list.appendChild(noResults);
             return;
         }
@@ -1761,7 +1762,7 @@ var Slim = (function () {
                 if (this_1.main.config.selectByGroup && this_1.main.config.isMultiple) {
                     optgroupLabel.classList.add(this_1.main.config.optgroupLabelSelectable);
                 }
-                optgroupLabel.innerHTML = item.label;
+                optgroupLabel.textContent = item.label;
                 optgroupEl_1.appendChild(optgroupLabel);
                 var options = item.options;
                 if (options) {
@@ -1814,11 +1815,8 @@ var Slim = (function () {
         }
         var selected = this.main.data.getSelected();
         optionEl.dataset.id = data.id;
-        if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
-            optionEl.innerHTML = helper_1.highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter);
-        }
-        else if (data.innerHTML) {
-            optionEl.innerHTML = data.innerHTML;
+        if (data.text) {
+            optionEl.textContent = data.text;
         }
         if (this.main.config.showOptionTooltips && optionEl.textContent) {
             optionEl.setAttribute('title', optionEl.textContent);

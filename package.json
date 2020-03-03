@@ -32,7 +32,7 @@
     "cleanDist": "rm dist/slimselectcss.min.js && rm dist/slimselectcss.js",
     "renameDist": "mv 'dist/slimselectcss.css' 'dist/slimselect.css' && mv 'dist/slimselectcss.min.css' 'dist/slimselect.min.css'",
     "docs": "vue-cli-service build",
-    "build": "npm run docs && npm run library",
+    "build": "npm run library",
     "lint": "vue-cli-service lint"
   },
   "devDependencies": {

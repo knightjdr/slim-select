@@ -110,7 +110,7 @@ export class Slim {
 
     // Deselect
     const deselect = document.createElement('span')
-    deselect.innerHTML = this.main.config.deselectLabel
+    deselect.textContent = this.main.config.deselectLabel
     deselect.classList.add('ss-deselect')
     deselect.onclick = (e) => {
       e.stopPropagation()
@@ -156,17 +156,17 @@ export class Slim {
     if (selected === null || (selected && selected.placeholder)) {
       const placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
-      placeholder.innerHTML = this.main.config.placeholderText
+      placeholder.textContent = this.main.config.placeholderText
       if (this.singleSelected) {
-        this.singleSelected.placeholder.innerHTML = placeholder.outerHTML
+        this.singleSelected.placeholder.appendChild(placeholder)
       }
     } else {
       let selectedValue = ''
       if (selected) {
-        selectedValue = selected.innerHTML && this.main.config.valuesUseText !== true ? selected.innerHTML : selected.text
+        selectedValue = selected.text
       }
       if (this.singleSelected) {
-        this.singleSelected.placeholder.innerHTML = (selected ? selectedValue : '')
+        this.singleSelected.placeholder.textContent = (selected ? selectedValue : '')
       }
     }
   }
@@ -278,8 +278,8 @@ export class Slim {
     if (selected.length === 0) {
       const placeholder = document.createElement('span')
       placeholder.classList.add(this.main.config.disabled)
-      placeholder.innerHTML = this.main.config.placeholderText
-      this.multiSelected.values.innerHTML = placeholder.outerHTML
+      placeholder.textContent = this.main.config.placeholderText
+      this.multiSelected.values.appendChild(placeholder)
     }
   }
 
@@ -290,12 +290,12 @@ export class Slim {
 
     const text = document.createElement('span')
     text.classList.add(this.main.config.valueText)
-    text.innerHTML = (optionObj.innerHTML && this.main.config.valuesUseText !== true ? optionObj.innerHTML : optionObj.text)
+    text.textContent = optionObj.text
     value.appendChild(text)
 
     const deleteSpan = document.createElement('span')
     deleteSpan.classList.add(this.main.config.valueDelete)
-    deleteSpan.innerHTML = this.main.config.deselectLabel
+    deleteSpan.textContent = this.main.config.deselectLabel
     deleteSpan.onclick = (e) => {
       e.preventDefault()
       e.stopPropagation()
@@ -420,7 +420,7 @@ export class Slim {
 
     if (this.main.addable) {
       addable.classList.add(this.main.config.addable)
-      addable.innerHTML = '+'
+      addable.textContent = '+'
       addable.onclick = (e) => {
         if (this.main.addable) {
           e.preventDefault()
@@ -558,15 +558,17 @@ export class Slim {
   public options(content: string = ''): void {
     const data = this.main.data.filtered || this.main.data.data
 
-    // Clear out innerHtml
-    this.list.innerHTML = ''
+    // Clear out element
+    while(this.list.firstChild){
+      this.list.removeChild(this.list.firstChild);
+    }
 
     // If content is being passed just use that text
     if (content !== '') {
       const searching = document.createElement('div')
       searching.classList.add(this.main.config.option)
       searching.classList.add(this.main.config.disabled)
-      searching.innerHTML = content
+      searching.textContent = content
       this.list.appendChild(searching)
       return
     }
@@ -576,7 +578,7 @@ export class Slim {
       const searching = document.createElement('div')
       searching.classList.add(this.main.config.option)
       searching.classList.add(this.main.config.disabled)
-      searching.innerHTML = this.main.config.searchingText
+      searching.textContent = this.main.config.searchingText
       this.list.appendChild(searching)
       return
     }
@@ -586,7 +588,7 @@ export class Slim {
       const noResults = document.createElement('div')
       noResults.classList.add(this.main.config.option)
       noResults.classList.add(this.main.config.disabled)
-      noResults.innerHTML = this.main.config.searchText
+      noResults.textContent = this.main.config.searchText
       this.list.appendChild(noResults)
       return
     }
@@ -605,7 +607,7 @@ export class Slim {
         if (this.main.config.selectByGroup && this.main.config.isMultiple) {
           optgroupLabel.classList.add(this.main.config.optgroupLabelSelectable)
         }
-        optgroupLabel.innerHTML = item.label
+        optgroupLabel.textContent = item.label
         optgroupEl.appendChild(optgroupLabel)
 
         const options = item.options
@@ -664,10 +666,8 @@ export class Slim {
     const selected = this.main.data.getSelected() as Option
 
     optionEl.dataset.id = data.id
-    if (this.main.config.searchHighlight && this.main.slim && data.innerHTML && this.main.slim.search.input.value.trim() !== '') {
-      optionEl.innerHTML = highlight(data.innerHTML, this.main.slim.search.input.value, this.main.config.searchHighlighter)
-    } else if (data.innerHTML) {
-      optionEl.innerHTML = data.innerHTML
+    if (data.text) {
+      optionEl.textContent = data.text
     }
     if (this.main.config.showOptionTooltips && optionEl.textContent) {
       optionEl.setAttribute('title', optionEl.textContent)

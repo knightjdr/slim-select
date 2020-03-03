@@ -12,7 +12,6 @@ export interface Option {
     id?: string;
     value?: string;
     text: string;
-    innerHTML?: string;
     selected?: boolean;
     display?: boolean;
     disabled?: boolean;
